@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yardimtakip/firebase_options.dart';
 import 'package:yardimtakip/repository/network_repository.dart';
+import 'package:yardimtakip/screens/conditions/conditions_screen.dart';
 import 'package:yardimtakip/screens/home/home_screen.dart';
 import 'package:yardimtakip/screens/user_profile/user_profile.screen.dart';
 
@@ -32,9 +33,8 @@ class MyApp extends StatelessWidget {
         initialRoute: '/profile',
         routes: {
           '/home': (context) => const HomeScreen(),
-          
-          '/profile': (context) => const  UserProfileScreen(),
-
+          '/profile': (context) => const UserProfileScreen(),
+          '/conditions': (context) => const ConditionsScreen(),
         },
       ),
     );
