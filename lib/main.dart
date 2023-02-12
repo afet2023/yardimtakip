@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yardimtakip/firebase_options.dart';
 import 'package:yardimtakip/repository/network_repository.dart';
 import 'package:yardimtakip/screens/home/home_screen.dart';
+import 'package:yardimtakip/screens/userinfo/userinfo_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,18 +24,16 @@ class MyApp extends StatelessWidget {
           create: (context) => FirebaseRepository(FirebaseDatabase.instance),
         ),
       ],
-      child: MultiBlocProvider(
-        providers: [],
-        child: MaterialApp(
-          title: 'Yardım Takip',
-          theme: ThemeData(
-            primarySwatch: Colors.red,
-          ),
-          initialRoute: '/select_volunteer',
-          routes: {
-            '/home': (context) => const HomeScreen(),
-          },
+      child: MaterialApp(
+        title: 'Yardım Takip',
+        theme: ThemeData(
+          primarySwatch: Colors.red,
         ),
+        initialRoute: '/user_info',
+        routes: {
+          '/home': (context) => const HomeScreen(),
+          '/user_info': (context) => UserSaveInfo(),
+        },
       ),
     );
   }
