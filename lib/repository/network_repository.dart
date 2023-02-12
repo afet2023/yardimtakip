@@ -20,6 +20,9 @@ abstract class INetworkRepository {
   Future<void> addEarthquakeVictims(EarthquakeVictims earthquakeVictims);
 
   Future<List<FormModel>> getAllFormFilledByVolunteerId(String volunteerId);
+
+  Future<List<EarthquakeVictims>> getAllEarthquakeVictims();
+  Future<List<EarthquakeVictims>> getAllEarthquakeVictimsById(String id);
 }
 
 class FirebaseRepository implements INetworkRepository {
@@ -147,5 +150,39 @@ class FirebaseRepository implements INetworkRepository {
         .child('earthquakeVictims')
         .push()
         .set(earthquakeVictims.toMap());
+  }
+
+  @override
+  Future<List<EarthquakeVictims>> getAllEarthquakeVictims() async {
+    var victims = <EarthquakeVictims>[];
+    var databaseEvent =
+        await firebaseDatabase.ref().child("earthquakeVictims").once();
+    if (databaseEvent.snapshot.value == null) return victims;
+
+    var data = databaseEvent.snapshot.value as Map;
+
+    data.forEach((key, value) {
+      victims.add(EarthquakeVictims.fromMap(value));
+    });
+    return victims;
+  }
+
+  @override
+  Future<List<EarthquakeVictims>> getAllEarthquakeVictimsById(String id) async {
+    var victims = <EarthquakeVictims>[];
+    var databaseEvent = await firebaseDatabase
+        .ref()
+        .child("earthquakeVictims")
+        .orderByChild('createdByVolunteerId')
+        .equalTo(id)
+        .once();
+    if (databaseEvent.snapshot.value == null) return victims;
+
+    var data = databaseEvent.snapshot.value as Map;
+
+    data.forEach((key, value) {
+      victims.add(EarthquakeVictims.fromMap(value));
+    });
+    return victims;
   }
 }

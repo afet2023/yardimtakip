@@ -40,34 +40,46 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state.status == AuthenticationStatus.authenticated) {
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/home', (route) => false);
-        } else if (state.status == AuthenticationStatus.unauthenticated) {}
+        } else if (state.status == AuthenticationStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage ?? 'Bir hata oluştu'),
+            ),
+          );
+        }
       },
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 80,
-                backgroundColor: Colors.transparent,
-                child: SvgPicture.asset(
-                  'assets/svg/gsb.svg',
-                  color: Colors.black87,
-                  key: const Key('gsbLogo'),
-                ),
+          child: Center(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 80,
+                    backgroundColor: Colors.transparent,
+                    child: SvgPicture.asset(
+                      'assets/svg/gsb.svg',
+                      color: Colors.black87,
+                      key: const Key('gsbLogo'),
+                    ),
+                  ),
+                  Text('Tekrar Hoşgeldiniz',
+                      style: context.textTheme.headline4),
+                  Text(
+                    'Sizin için oluşturulmuş e-posta ve şifreniz ile oturum açarak devam edebilirsiniz.',
+                    textAlign: TextAlign.center,
+                    style: context.textTheme.bodyText2,
+                  ),
+                  _buildForm(context),
+                  const SizedBox(height: 20),
+                  buildNoAccount(context)
+                ],
               ),
-              Text('Tekrar Hoşgeldiniz', style: context.textTheme.headline4),
-              Text(
-                'Sizin için oluşturulmuş e-posta ve şifreniz ile oturum açarak devam edebilirsiniz.',
-                textAlign: TextAlign.center,
-                style: context.textTheme.bodyText2,
-              ),
-              _buildForm(context),
-              const SizedBox(height: 20),
-              buildNoAccount(context)
-            ],
+            ),
           ),
         ),
       ),
@@ -77,20 +89,17 @@ class _LoginScreenState extends State<LoginScreen> {
   Form _buildForm(BuildContext context) {
     return Form(
       key: formKey,
-      child: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            SizedBox(height: 16),
-            _buildEmailField(),
-            SizedBox(height: 16),
-            _buildPasswordField(),
-            SizedBox(height: 16),
-            _buildSignInButton(context),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(height: 16),
+          _buildEmailField(),
+          SizedBox(height: 16),
+          _buildPasswordField(),
+          SizedBox(height: 16),
+          _buildSignInButton(context),
+        ],
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:yardimtakip/model/inventory_category_model.dart';
 import 'package:yardimtakip/model/inventory_item.dart';
 import 'package:yardimtakip/screens/userinfo/userinfo_constant.dart';
 
+import '../../repository/firebase_auth_repository.dart';
 import '../../repository/network_repository.dart';
 
 class UserInfoWidgets {
@@ -20,6 +21,8 @@ class UserInfoWidgets {
             nameAndSurname: UserInfoConstants.nameSurnameController.text,
             phoneNumber: UserInfoConstants.phoneNumberController.text,
             createdAt: DateTime.now().toIso8601String(),
+            createdByVolunteerId:
+                context.read<FirebaseAuthRepository>().getCurrentUser!.uid,
             uid: UserInfoConstants.citizenNumberController.text,
             city: UserInfoConstants.cityController.text,
             familyCount: int.parse(

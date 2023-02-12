@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yardimtakip/model/volunteer_model.dart';
@@ -29,39 +30,42 @@ class AuthenticationBloc
   Future<FutureOr<void>> loginEvent(
       AuthenticationLoginEvent event, Emitter<AuthenticationState> emit) async {
     try {
+      EasyLoading.show(status: 'Giriş yapılıyor...');
       emit(state.copyWith(status: AuthenticationStatus.loading));
       await _firebaseAuthRepository.signInWithEmailAndPassword(
           email: event.email, password: event.password);
       emit(state.copyWith(status: AuthenticationStatus.authenticated));
+      EasyLoading.dismiss();
       add(AuthenticationInitialEvent());
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found':
           emit(state.copyWith(
-              status: AuthenticationStatus.unauthenticated,
+              status: AuthenticationStatus.error,
               errorMessage: 'Böyle bir kullanıcı bulunamadı.'));
           break;
         case 'wrong-password':
           emit(state.copyWith(
-              status: AuthenticationStatus.unauthenticated,
+              status: AuthenticationStatus.error,
               errorMessage: 'Şifre yanlış.'));
           break;
         default:
           emit(state.copyWith(
-              status: AuthenticationStatus.unauthenticated,
-              errorMessage: e.message));
+              status: AuthenticationStatus.error, errorMessage: e.message));
           break;
       }
     } catch (e) {
       emit(state.copyWith(
-          status: AuthenticationStatus.unauthenticated,
-          errorMessage: e.toString()));
+          status: AuthenticationStatus.error, errorMessage: e.toString()));
+    } finally {
+      EasyLoading.dismiss();
     }
   }
 
   Future<FutureOr<void>> registerEvent(AuthenticationRegisterEvent event,
       Emitter<AuthenticationState> emit) async {
     try {
+      EasyLoading.show(status: 'Kayıt olunuyor...');
       emit(state.copyWith(status: AuthenticationStatus.loading));
       var user = await _firebaseAuthRepository.createUserWithEmailAndPassword(
           email: event.email, password: event.password);
@@ -73,7 +77,7 @@ class AuthenticationBloc
           isVerified: false,
           createdAt: DateTime.now().toIso8601String(),
           updatedAt: DateTime.now().toIso8601String()));
-
+      EasyLoading.dismiss();
       emit(state.copyWith(status: AuthenticationStatus.authenticated));
       emit(state.copyWith(status: AuthenticationStatus.authenticated));
     } on FirebaseAuthException catch (e) {
@@ -84,44 +88,35 @@ class AuthenticationBloc
       emit(state.copyWith(
           status: AuthenticationStatus.unauthenticated,
           errorMessage: e.toString()));
+    } finally {
+      EasyLoading.dismiss();
     }
   }
 
   Future<FutureOr<void>> _onInitialEvent(AuthenticationInitialEvent event,
       Emitter<AuthenticationState> emit) async {
+    EasyLoading.show(status: 'Giriş yapılıyor...');
     emit(state.copyWith(status: AuthenticationStatus.loading));
     var user = _firebaseAuthRepository.getCurrentUser;
     if (user != null) {
-      emit(state.copyWith(
-          status: AuthenticationStatus.authenticated, user: user));
-      /*  var volunteer = await _networkRepository.getVolunteerById(user.uid);
-      if (volunteer != null) {
-        if (volunteer.isVerified == false) {
-          emit(state.copyWith(
-              status: AuthenticationStatus.error,
-              errorMessage: 'Hesabınız henüz onaylanmadı.'));
-        } else {
-          emit(
-            state.copyWith(
-                status: AuthenticationStatus.authenticated,
-                volunteer: volunteer),
-          );
-    /*     } */
-      } else {
-        //    await _firebaseAuthRepository.signOut();
-        emit(state.copyWith(
-          status: AuthenticationStatus.unauthenticated,
-          errorMessage: 'Tekrar giriş yapmayı deneyin',
-        ));
-      } */
+      var volunteer = await _networkRepository.getVolunteerById(user.uid);
+      emit(
+        state.copyWith(
+            status: AuthenticationStatus.authenticated,
+            user: user,
+            volunteer: volunteer),
+      );
     } else {
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     }
+    EasyLoading.dismiss();
   }
 
-  FutureOr<void> _onLogoutEvent(
-      AuthenticationLogoutEvent event, Emitter<AuthenticationState> emit) {
-    _firebaseAuthRepository.signOut();
+  Future<FutureOr<void>> _onLogoutEvent(AuthenticationLogoutEvent event,
+      Emitter<AuthenticationState> emit) async {
+    EasyLoading.show(status: 'Çıkış yapılıyor...');
+    await _firebaseAuthRepository.signOut();
+    EasyLoading.dismiss();
     emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
   }
 }

@@ -136,7 +136,10 @@ class InventoryCategoryWidget extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return ListTile(
-                    title: Text(category.inventoryItems[index].name),
+                    title: Text(
+                      category.inventoryItems[index].name,
+                      style: context.textTheme.bodyLarge!.copyWith(),
+                    ),
                     trailing: StatefulBuilder(
                       builder: (context, setQuantityState) {
                         return Row(
@@ -156,7 +159,11 @@ class InventoryCategoryWidget extends StatelessWidget {
                                 category.inventoryItems[index].quantity
                                     .toString(),
                                 style: context.textTheme.headline6!.copyWith(
-                                    color: context.colorScheme.primary,
+                                    color: category.inventoryItems[index]
+                                                .quantity >
+                                            0
+                                        ? context.colorScheme.primary
+                                        : Colors.grey,
                                     fontWeight: FontWeight.w400)),
                             IconButton(
                               onPressed: () {

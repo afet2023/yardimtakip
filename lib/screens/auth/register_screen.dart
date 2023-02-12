@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:kartal/kartal.dart';
 
 import '../../bloc/authentication_bloc.dart';
@@ -50,17 +51,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
       },
       child: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildForm(context),
-            SizedBox(
-              height: 20,
+        body: Center(
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 80,
+                  backgroundColor: Colors.transparent,
+                  child: SvgPicture.asset(
+                    'assets/svg/gsb.svg',
+                    color: Colors.black87,
+                    key: const Key('gsbLogo'),
+                  ),
+                ),
+                Text('Hoşgeldiniz', style: context.textTheme.titleLarge),
+                SizedBox(height: 8),
+                Text(
+                  'Kayıt olmak için lütfen e-posta ve şifrenizi giriniz.',
+                  style: context.textTheme.bodyText2,
+                ),
+                SizedBox(height: 16),
+                _buildForm(context),
+                SizedBox(
+                  height: 20,
+                ),
+                _buildDivider(),
+                buildLogin(context)
+              ],
             ),
-            _buildDivider(),
-            buildLogin(context)
-          ],
+          ),
         ),
       ),
     );
@@ -75,14 +97,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            CircleAvatar(),
-            Text('Hoşgeldiniz', style: context.textTheme.titleLarge),
-            SizedBox(height: 8),
-            Text(
-              'Kayıt olmak için lütfen e-posta ve şifrenizi giriniz.',
-              style: context.textTheme.bodyText2,
-            ),
-            SizedBox(height: 16),
             _buildNameField(),
             _buildPhoneField(),
             _buildEmailField(),
