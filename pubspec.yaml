@@ -31,11 +31,15 @@ environment:
 dependencies:
   bloc: ^8.1.1
   cupertino_icons: ^1.0.2
+  equatable: ^2.0.5
+  firebase_auth: ^4.2.6
   firebase_core: ^2.5.0
   firebase_database: ^10.0.10
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2
+  flutter_form_builder: ^7.7.0
+  form_builder_validators: ^8.4.0
   mocktail: ^0.3.0
   shared_preferences: ^2.0.17
   uuid: ^3.0.7
