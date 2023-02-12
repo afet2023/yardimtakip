@@ -5,23 +5,25 @@ class VolunteerModel {
   final String name;
   final String email;
   final String phone;
-  final String address;
-  final String city;
-  final String district;
-  final String description;
-  final String createdAt;
-  final String updatedAt;
+  String? address;
+  String? city;
+  String? district;
+  String? description;
+  String? createdAt;
+  final bool isVerified;
+  String? updatedAt;
   VolunteerModel({
     required this.id,
     required this.name,
     required this.email,
     required this.phone,
-    required this.address,
-    required this.city,
-    required this.district,
-    required this.description,
-    required this.createdAt,
-    required this.updatedAt,
+    this.address,
+    this.city,
+    this.district,
+    this.description,
+    this.createdAt,
+    required this.isVerified,
+    this.updatedAt,
   });
 
   VolunteerModel copyWith({
@@ -34,6 +36,7 @@ class VolunteerModel {
     String? district,
     String? description,
     String? createdAt,
+    bool? isVerified,
     String? updatedAt,
   }) {
     return VolunteerModel(
@@ -46,6 +49,7 @@ class VolunteerModel {
       district: district ?? this.district,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
+      isVerified: isVerified ?? this.isVerified,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
@@ -57,12 +61,25 @@ class VolunteerModel {
     result.addAll({'name': name});
     result.addAll({'email': email});
     result.addAll({'phone': phone});
-    result.addAll({'address': address});
-    result.addAll({'city': city});
-    result.addAll({'district': district});
-    result.addAll({'description': description});
-    result.addAll({'createdAt': createdAt});
-    result.addAll({'updatedAt': updatedAt});
+    if (address != null) {
+      result.addAll({'address': address});
+    }
+    if (city != null) {
+      result.addAll({'city': city});
+    }
+    if (district != null) {
+      result.addAll({'district': district});
+    }
+    if (description != null) {
+      result.addAll({'description': description});
+    }
+    if (createdAt != null) {
+      result.addAll({'createdAt': createdAt});
+    }
+    result.addAll({'isVerified': isVerified});
+    if (updatedAt != null) {
+      result.addAll({'updatedAt': updatedAt});
+    }
 
     return result;
   }
@@ -73,27 +90,13 @@ class VolunteerModel {
       name: map['name'] ?? '',
       email: map['email'] ?? '',
       phone: map['phone'] ?? '',
-      address: map['address'] ?? '',
-      city: map['city'] ?? '',
-      district: map['district'] ?? '',
-      description: map['description'] ?? '',
-      createdAt: map['createdAt'] ?? '',
-      updatedAt: map['updatedAt'] ?? '',
-    );
-  }
-  //fake model
-  factory VolunteerModel.fake() {
-    return VolunteerModel(
-      id: '1',
-      name: 'Test soyadı',
-      email: 'test@gmail.com',
-      phone: '0123456789',
-      address: 'Adres',
-      city: 'Hatay',
-      district: 'Antakya',
-      description: 'Tanım',
-      createdAt: DateTime.now().toString(),
-      updatedAt: DateTime.now().toString(),
+      address: map['address'],
+      city: map['city'],
+      district: map['district'],
+      description: map['description'],
+      createdAt: map['createdAt'],
+      isVerified: map['isVerified'] ?? false,
+      updatedAt: map['updatedAt'],
     );
   }
 
@@ -104,7 +107,7 @@ class VolunteerModel {
 
   @override
   String toString() {
-    return 'VolunteerModel(id: $id, name: $name, email: $email, phone: $phone, address: $address, city: $city, district: $district, description: $description, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'VolunteerModel(id: $id, name: $name, email: $email, phone: $phone, address: $address, city: $city, district: $district, description: $description, createdAt: $createdAt, isVerified: $isVerified, updatedAt: $updatedAt)';
   }
 
   @override
@@ -121,6 +124,7 @@ class VolunteerModel {
         other.district == district &&
         other.description == description &&
         other.createdAt == createdAt &&
+        other.isVerified == isVerified &&
         other.updatedAt == updatedAt;
   }
 
@@ -135,6 +139,7 @@ class VolunteerModel {
         district.hashCode ^
         description.hashCode ^
         createdAt.hashCode ^
+        isVerified.hashCode ^
         updatedAt.hashCode;
   }
 }
