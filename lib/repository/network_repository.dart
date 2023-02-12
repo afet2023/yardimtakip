@@ -7,6 +7,9 @@ import '../model/form_model.dart';
 abstract class INetworkRepository {
   Future<void> createNewVolunteer(VolunteerModel volunteerModel);
   Future<List<VolunteerModel>> getAllVolunteers();
+  Future<VolunteerModel?> getVolunteerById(String volunteerId);
+  Future<bool> isVolunteerExist(String volunteerId);
+  Future<bool> verifiedVolunteer(String volunteerId);
   Future<void> addInventory(InventoryItemModel inventoryItemModel);
   Future<List<InventoryItemModel>> getAllInventories();
   Future<void> addForm(FormModel formModel);
@@ -90,5 +93,31 @@ class FirebaseRepository implements INetworkRepository {
       forms.add(FormModel.fromMap(value));
     });
     return forms;
+  }
+
+  @override
+  Future<VolunteerModel?> getVolunteerById(String volunteerId) async {
+    var databaseEvent = await firebaseDatabase
+        .ref()
+        .child('volunteers')
+        .orderByChild('id')
+        .equalTo(volunteerId)
+        .once();
+    if (databaseEvent.snapshot.value == null) return null;
+
+    var data = databaseEvent.snapshot.value as Map;
+    return VolunteerModel.fromMap(data);
+  }
+
+  @override
+  Future<bool> isVolunteerExist(String volunteerId) {
+    // TODO: implement isVolunteerExist
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> verifiedVolunteer(String volunteerId) {
+    // TODO: implement verifiedVolunteer
+    throw UnimplementedError();
   }
 }

@@ -17,4 +17,12 @@ class FirebaseAuthRepository {
         .createUserWithEmailAndPassword(email: email, password: password);
     return userCredential.user;
   }
+
+  User? get getCurrentUser {
+    return _firebaseAuth.currentUser;
+  }
+
+  Future signOut() async {
+    await _firebaseAuth.signOut();
+  }
 }
