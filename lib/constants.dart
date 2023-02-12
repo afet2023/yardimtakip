@@ -34,8 +34,8 @@ var inventories = {
                         .map((e) => InventoryItemModel(
                             id: Uuid().v4(), name: e, description: e))
                         .toList(),
-                    createdAt: DateTime.now().toString(),
-                    updatedAt: DateTime.now().toString()));
+                    createdAt: DateTime.now().toIso8601String().toString(),
+                    updatedAt: DateTime.now().toIso8601String().toString()));
           });
           data.forEach((key, value) {
             context.read<INetworkRepository>().addCategoryInventory(value);

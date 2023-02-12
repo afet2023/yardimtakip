@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class InventoryModel {
   final String inventoryId;
-  final String quantity;
+  final int quantity;
   InventoryModel({
     required this.inventoryId,
     required this.quantity,
@@ -10,7 +10,7 @@ class InventoryModel {
 
   InventoryModel copyWith({
     String? inventoryId,
-    String? quantity,
+    int? quantity,
   }) {
     return InventoryModel(
       inventoryId: inventoryId ?? this.inventoryId,
@@ -30,13 +30,13 @@ class InventoryModel {
   factory InventoryModel.fromMap(Map map) {
     return InventoryModel(
       inventoryId: map['inventoryId'] ?? '',
-      quantity: map['quantity'] ?? '',
+      quantity: map['quantity']?.toInt() ?? 0,
     );
   }
 // fake  model
   factory InventoryModel.fake() => InventoryModel(
         inventoryId: '1',
-        quantity: '1',
+        quantity: 1,
       );
   String toJson() => json.encode(toMap());
 

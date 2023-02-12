@@ -8,3 +8,17 @@ abstract class InventoryEvent extends Equatable {
 }
 
 class InventoryLoadEvent extends InventoryEvent {}
+
+class InventoryClearEvent extends InventoryEvent {
+  String? message;
+
+  InventoryClearEvent([this.message]);
+}
+
+class InventoryAddNewEntryEvent extends InventoryEvent {
+  final EarthquakeVictims earthquakeVictims;
+
+  InventoryAddNewEntryEvent(this.earthquakeVictims);
+  @override
+  List<Object> get props => [earthquakeVictims];
+}

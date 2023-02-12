@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yardimtakip/constants.dart';
+import 'package:yardimtakip/model/earthquake_victims_model.dart';
 import 'package:yardimtakip/model/inventory_category_model.dart';
 import 'package:yardimtakip/model/inventory_item.dart';
 import 'package:yardimtakip/screens/userinfo/userinfo_constant.dart';
@@ -13,7 +14,23 @@ class UserInfoWidgets {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: InkWell(
-        onTap: () async {},
+        onTap: () async {
+          var earthquakeVictims = EarthquakeVictims(
+            id: Uuid().v4(),
+            nameAndSurname: UserInfoConstants.nameSurnameController.text,
+            phoneNumber: UserInfoConstants.phoneNumberController.text,
+            createdAt: DateTime.now().toIso8601String(),
+            uid: UserInfoConstants.citizenNumberController.text,
+            city: UserInfoConstants.cityController.text,
+            familyCount: int.parse(
+                UserInfoConstants.numOfPersonController.text.isEmpty
+                    ? '0'
+                    : UserInfoConstants.numOfPersonController.text),
+          );
+
+          Navigator.pushNamed(context, '/inventory',
+              arguments: earthquakeVictims);
+        },
         child: Container(
           alignment: Alignment.center,
           height: 50,

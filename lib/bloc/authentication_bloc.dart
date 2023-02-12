@@ -70,8 +70,8 @@ class AuthenticationBloc
           email: event.email,
           phone: event.phone,
           isVerified: false,
-          createdAt: DateTime.now().toString(),
-          updatedAt: DateTime.now().toString()));
+          createdAt: DateTime.now().toIso8601String(),
+          updatedAt: DateTime.now().toIso8601String()));
 
       emit(state.copyWith(status: AuthenticationStatus.authenticated));
       emit(state.copyWith(status: AuthenticationStatus.authenticated));

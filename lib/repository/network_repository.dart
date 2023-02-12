@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:yardimtakip/model/earthquake_victims_model.dart';
 import 'package:yardimtakip/model/inventory_category_model.dart';
 import 'package:yardimtakip/model/inventory_item.dart';
 import 'package:yardimtakip/model/volunteer_model.dart';
@@ -16,6 +17,8 @@ abstract class INetworkRepository {
   Future<List<InventoryCategoryModel>> getAllInventoryCategories();
   Future<List<InventoryItemModel>> getAllInventories();
   Future<void> addForm(FormModel formModel);
+  Future<void> addEarthquakeVictims(EarthquakeVictims earthquakeVictims);
+
   Future<List<FormModel>> getAllFormFilledByVolunteerId(String volunteerId);
 }
 
@@ -135,5 +138,14 @@ class FirebaseRepository implements INetworkRepository {
       categories.add(InventoryCategoryModel.fromMap(value));
     });
     return categories;
+  }
+
+  @override
+  Future<void> addEarthquakeVictims(EarthquakeVictims earthquakeVictims) {
+    return firebaseDatabase
+        .ref()
+        .child('earthquakeVictims')
+        .push()
+        .set(earthquakeVictims.toMap());
   }
 }
