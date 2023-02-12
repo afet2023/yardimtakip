@@ -25,6 +25,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  final phoneController = TextEditingController();
+  final nameController = TextEditingController();
+
   @override
   void dispose() {
     emailController.dispose();
@@ -36,9 +39,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
-        if (state.status == AuthenticationStatus.authenticated) {
-          Navigator.pushReplacementNamed(context, '/home');
-        } else if (state.status == AuthenticationStatus.unauthenticated) {
+        if (state.status == AuthenticationStatus.unverified) {
+          Navigator.pop(context);
+        } else if (state.status == AuthenticationStatus.error) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage!),
@@ -80,10 +83,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               style: context.textTheme.bodyText2,
             ),
             SizedBox(height: 16),
+            _buildNameField(),
+            _buildPhoneField(),
             _buildEmailField(),
-            SizedBox(height: 16),
             _buildPasswordField(),
-            SizedBox(height: 16),
+            SizedBox(height: 20),
             _buildSignUpButton(context),
           ],
         ),
@@ -107,6 +111,68 @@ class _RegisterScreenState extends State<RegisterScreen> {
         .hasMatch(email);
   }
 
+  Widget _buildPhoneField() {
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(32),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32),
+          color: Colors.white.withOpacity(0.6),
+        ),
+        child: TextFormField(
+          controller: phoneController,
+          keyboardType: TextInputType.phone,
+          textInputAction: TextInputAction.next,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Telefon alanı boş olamaz';
+            }
+            return null;
+          },
+          decoration: const InputDecoration(
+            labelText: "Telefon",
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNameField() {
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(32),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32),
+          color: Colors.white.withOpacity(0.6),
+        ),
+        child: TextFormField(
+          controller: nameController,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.next,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Ad Soyad alanı boş olamaz';
+            }
+            return null;
+          },
+          decoration: const InputDecoration(
+            labelText: "Ad Soyad",
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildEmailField() {
     return Card(
       elevation: 5,
@@ -125,11 +191,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           textInputAction: TextInputAction.next,
           validator: (value) {
             if (value!.isEmpty) {
-              callSnackbar('Email boş olamaz.');
-              return null;
+              return 'Email alanı boş olamaz';
             } else if (!isValidEmail(value)) {
-              callSnackbar('Email formatı hatalı');
-              return null;
+              return 'Geçerli bir email adresi giriniz';
             }
             return null;
           },
@@ -146,9 +210,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       backgroundColor: color ?? Colors.red,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       onVisible: onVisible,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -188,11 +252,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: passwordController,
               validator: (value) {
                 if (value!.isEmpty) {
-                  callSnackbar('Şifre alanı boş olamaz.');
-                  return null;
+                  return 'Şifre alanı boş olamaz';
                 } else if (value.length < 6) {
-                  callSnackbar('Şifreniz minimum 6 haneli olmalıdır.');
-                  return null;
+                  return 'Şifre en az 6 karakter olmalıdır';
                 }
                 return null;
               },
@@ -230,7 +292,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       MaterialPageRoute(
                           builder: (context) => RegisterScreen()));
                 },
-              text: 'Sign Up',
+              text: 'Kayıt Ol',
               style: const TextStyle(
                 decoration: TextDecoration.underline,
                 color: Colors.black54,
@@ -246,15 +308,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
           minimumSize: const Size(double.infinity, 50)),
       onPressed: () async {
-        context.read<AuthenticationBloc>().add(
-              AuthenticationRegisterEvent(
+        if (formKey.currentState!.validate()) {
+          context.read<AuthenticationBloc>().add(AuthenticationRegisterEvent(
                 email: emailController.text,
                 password: passwordController.text,
-              ),
-            );
+                phone: phoneController.text,
+                name: nameController.text,
+              ));
+        }
       },
       child: Text(
-        "Sign Up",
+        "Kayıt Ol",
       ),
     );
   }
@@ -262,7 +326,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget buildLogin(BuildContext context) {
     return GestureDetector(
         child: const Text(
-          "Login",
+          "Zaten bir hesabın var mı? Giriş Yap",
           style: TextStyle(
               decoration: TextDecoration.underline, color: Colors.black54),
         ),

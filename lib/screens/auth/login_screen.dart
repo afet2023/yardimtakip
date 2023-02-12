@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:kartal/kartal.dart';
 import '../../bloc/authentication_bloc.dart';
 
@@ -23,7 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
+  bool emailIsValid = false;
+  bool passwordIsValid = false;
   @override
   void dispose() {
     emailController.dispose();
@@ -37,29 +39,35 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) {
         if (state.status == AuthenticationStatus.authenticated) {
           Navigator.of(context).pushReplacementNamed('/home');
-        } else if (state.status == AuthenticationStatus.unauthenticated) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-            ),
-          );
-        }
+        } else if (state.status == AuthenticationStatus.unauthenticated) {}
       },
       child: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(),
-            Text('Tekrar Hoşgeldiniz', style: context.textTheme.titleLarge),
-            Text(
-              'Sizin için oluşturulmuş e-posta ve şifreniz ile oturum açarak devam edebilirsiniz.',
-              style: context.textTheme.bodyText2,
-            ),
-            _buildForm(context),
-            const SizedBox(height: 20),
-            buildNoAccount(context)
-          ],
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 80,
+                backgroundColor: Colors.transparent,
+                child: SvgPicture.asset(
+                  'assets/svg/gsb.svg',
+                  color: Colors.black87,
+                  key: const Key('gsbLogo'),
+                ),
+              ),
+              Text('Tekrar Hoşgeldiniz', style: context.textTheme.headline4),
+              Text(
+                'Sizin için oluşturulmuş e-posta ve şifreniz ile oturum açarak devam edebilirsiniz.',
+                textAlign: TextAlign.center,
+                style: context.textTheme.bodyText2,
+              ),
+              _buildForm(context),
+              const SizedBox(height: 20),
+              buildNoAccount(context)
+            ],
+          ),
         ),
       ),
     );
@@ -120,12 +128,11 @@ class _LoginScreenState extends State<LoginScreen> {
           textInputAction: TextInputAction.next,
           validator: (value) {
             if (value!.isEmpty) {
-              callSnackbar('Email boş olamaz.');
-              return null;
+              return 'Email boş olamaz.';
             } else if (!isValidEmail(value)) {
-              callSnackbar('Email formatı hatalı');
-              return null;
+              return 'Email formatı hatalı';
             }
+
             return null;
           },
           decoration: const InputDecoration(
@@ -183,12 +190,11 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: passwordController,
               validator: (value) {
                 if (value!.isEmpty) {
-                  callSnackbar('Şifre alanı boş olamaz.');
-                  return null;
+                  return 'Şifre alanı boş olamaz.';
                 } else if (value.length < 6) {
-                  callSnackbar('Şifreniz minimum 6 haneli olmalıdır.');
-                  return null;
+                  return 'Şifreniz minimum 6 haneli olmalıdır.';
                 }
+
                 return null;
               },
               textInputAction: TextInputAction.done,
@@ -227,7 +233,6 @@ class _LoginScreenState extends State<LoginScreen> {
             text: "No Account? ",
             children: [
           TextSpan(
-              // hesabın olmaması burda
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   Navigator.pushNamed(context, '/sign_up');
@@ -249,14 +254,15 @@ class _LoginScreenState extends State<LoginScreen> {
           minimumSize: const Size(double.infinity, 50)),
       onPressed: () async {
         if (formKey.currentState!.validate()) {
-          context.read<AuthenticationBloc>().add(AuthenticationLoginEvent(
-                email: emailController.text,
-                password: passwordController.text,
-              ));
+          context.read<AuthenticationBloc>().add(
+                AuthenticationLoginEvent(
+                    email: emailController.text,
+                    password: passwordController.text),
+              );
         }
       },
       child: Text(
-        "Sign In",
+        "Giriş Yap",
       ),
     );
   }

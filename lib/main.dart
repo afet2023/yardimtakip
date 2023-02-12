@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
             lazy: false,
             create: (context) => AuthenticationBloc(
               context.read<FirebaseAuthRepository>(),
+              context.read<INetworkRepository>(),
             )..add(AuthenticationInitialEvent()),
           ),
         ],

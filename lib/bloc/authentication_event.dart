@@ -14,5 +14,12 @@ class AuthenticationLoginEvent extends AuthenticationEvent {
 class AuthenticationRegisterEvent extends AuthenticationEvent {
   final String email;
   final String password;
-  AuthenticationRegisterEvent({required this.email, required this.password});
+  final String name;
+  final String phone;
+
+  AuthenticationRegisterEvent(
+      {required this.email,
+      required this.password,
+      required this.name,
+      required this.phone});
 }
