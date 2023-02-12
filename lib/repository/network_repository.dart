@@ -23,6 +23,8 @@ abstract class INetworkRepository {
 
   Future<List<EarthquakeVictims>> getAllEarthquakeVictims();
   Future<List<EarthquakeVictims>> getAllEarthquakeVictimsById(String id);
+
+  Future<FormModel?> getFormsByEarthquakeId(String id);
 }
 
 class FirebaseRepository implements INetworkRepository {
@@ -184,5 +186,19 @@ class FirebaseRepository implements INetworkRepository {
       victims.add(EarthquakeVictims.fromMap(value));
     });
     return victims;
+  }
+
+  @override
+  Future<FormModel?> getFormsByEarthquakeId(String id) async {
+    var databaseEvent = await firebaseDatabase
+        .ref()
+        .child("forms")
+        .orderByChild('earthquakeVictimsId')
+        .equalTo(id)
+        .once();
+    if (databaseEvent.snapshot.value == null) return null;
+
+    var data = databaseEvent.snapshot.value as Map;
+    return FormModel.fromMap(data.values.first);
   }
 }

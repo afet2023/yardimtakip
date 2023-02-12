@@ -11,6 +11,7 @@ import 'package:yardimtakip/repository/network_repository.dart';
 import 'package:yardimtakip/screens/auth/login_screen.dart';
 import 'package:yardimtakip/screens/auth/register_screen.dart';
 import 'package:yardimtakip/screens/conditions/conditions_screen.dart';
+import 'package:yardimtakip/screens/earthquake_victims_list/earthquake_victims_detail_screen.dart';
 import 'package:yardimtakip/screens/earthquake_victims_list/earthquake_victims_list_screen.dart';
 import 'package:yardimtakip/screens/entry_inventory/entry_inventory_screen.dart';
 import 'package:yardimtakip/screens/home/home_screen.dart';
@@ -92,6 +93,13 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
               );
+            } else if (settings.name == '/earthquake_victims_detail') {
+              final earthquakeVictims = settings.arguments as EarthquakeVictims;
+              return MaterialPageRoute(
+                builder: (context) => EarthquakeVictimsDetailScreen(
+                  earthquakeVictims: earthquakeVictims,
+                ),
+              );
             }
             return null;
           },
@@ -102,8 +110,6 @@ class MyApp extends StatelessWidget {
             '/user_info': (context) => const UserSaveInfo(),
             '/profile': (context) => const UserProfileScreen(),
             '/conditions': (context) => const ConditionsScreen(),
-            '/earthquake_victims': (context) =>
-                const EarthquakeVictimsListScreen(),
           },
           builder: EasyLoading.init(),
         ),

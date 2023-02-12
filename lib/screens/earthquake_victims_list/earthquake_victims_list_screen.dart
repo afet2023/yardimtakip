@@ -20,6 +20,12 @@ class _EarthquakeVictimsListScreenState
   }
 
   @override
+  void didChangeDependencies() {
+    context.read<EathquakeBloc>().add(EathquakeLoadEvent());
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
@@ -35,11 +41,6 @@ class _EarthquakeVictimsListScreenState
         ),
         body: BlocBuilder<EathquakeBloc, EathquakeState>(
           builder: (context, state) {
-            if (state.status == EathquakeStatus.loading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
             return TabBarView(
               children: [
                 UserCardListWidget(
@@ -75,9 +76,15 @@ class UserCardListWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             var earthquakeVictimsItem = earthquakeVictims[index];
             return ListTile(
-              title: Text(earthquakeVictimsItem.nameAndSurname),
-              subtitle: Text(earthquakeVictimsItem.phoneNumber),
-            );
+                title: Text(earthquakeVictimsItem.nameAndSurname),
+                subtitle: Text(earthquakeVictimsItem.phoneNumber),
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/earthquake_victims_detail',
+                    arguments: earthquakeVictimsItem,
+                  );
+                });
           },
         ),
       ),

@@ -11,27 +11,31 @@ class InventoryItemModel extends Equatable {
     required this.id,
     required this.name,
     required this.description,
+    required this.quantity,
   });
 
   InventoryItemModel copyWith({
     String? id,
     String? name,
     String? description,
+    int? quantity,
   }) {
     return InventoryItemModel(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
+      quantity: quantity ?? this.quantity,
     );
   }
 
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
-
+  
     result.addAll({'id': id});
     result.addAll({'name': name});
     result.addAll({'description': description});
-
+    result.addAll({'quantity': quantity});
+  
     return result;
   }
 
@@ -41,6 +45,7 @@ class InventoryItemModel extends Equatable {
       id: map['id'] ?? '',
       name: map['name'] ?? '',
       description: map['description'] ?? '',
+      quantity: map['quantity']?.toInt() ?? 0,
     );
   }
 
@@ -48,15 +53,11 @@ class InventoryItemModel extends Equatable {
 
   factory InventoryItemModel.fromJson(String source) =>
       InventoryItemModel.fromMap(json.decode(source));
-//fake
-  factory InventoryItemModel.fake() => InventoryItemModel(
-        id: '1',
-        name: '1',
-        description: '1',
-      );
+
   @override
-  String toString() =>
-      'InventoryItemModel(id: $id, name: $name, description: $description)';
+  String toString() {
+    return 'InventoryItemModel(id: $id, name: $name, description: $description, quantity: $quantity)';
+  }
 
   @override
   bool operator ==(Object other) {
@@ -72,5 +73,5 @@ class InventoryItemModel extends Equatable {
   int get hashCode => id.hashCode ^ name.hashCode ^ description.hashCode;
 
   @override
-  List<Object?> get props => [id, name, description, quantity];
+  List<Object> get props => [id, name, description, quantity];
 }

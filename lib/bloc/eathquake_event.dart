@@ -8,3 +8,10 @@ abstract class EathquakeEvent extends Equatable {
 }
 
 class EathquakeLoadEvent extends EathquakeEvent {}
+
+class EathquakeLoadDetailEvent extends EathquakeEvent {
+  final String id;
+  EathquakeLoadDetailEvent(this.id);
+}
+
+class EathquakeClearDetailEvent extends EathquakeEvent {}

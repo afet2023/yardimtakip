@@ -9,6 +9,7 @@ import 'package:yardimtakip/model/inventory_model.dart';
 import 'package:yardimtakip/repository/firebase_auth_repository.dart';
 
 import '../model/form_model.dart';
+import '../model/inventory_item.dart';
 import '../repository/network_repository.dart';
 
 part 'inventory_event.dart';
@@ -59,12 +60,10 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     try {
       if (state is InventoryLoaded) {
         var data = (state as InventoryLoaded).inventoryCategories;
-        var inventoryModels = <InventoryModel>[];
+        var inventoryModels = <InventoryItemModel>[];
         for (var item in data) {
           for (var element in item.inventoryItems) {
-            element.quantity = 0;
-            inventoryModels.add(InventoryModel(
-                inventoryId: element.id, quantity: element.quantity));
+            inventoryModels.add(element);
           }
         }
         var form = FormModel(

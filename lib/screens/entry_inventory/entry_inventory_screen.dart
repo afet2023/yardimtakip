@@ -39,8 +39,7 @@ class _EntryInventoryScreenState extends State<EntryInventoryScreen> {
             ),
           );
           await Future.delayed(Duration(seconds: 1));
-          Navigator.pushNamedAndRemoveUntil(
-              context, '/user_info', (route) => false);
+          Navigator.pop(context);
         }
       },
       child: Scaffold(
