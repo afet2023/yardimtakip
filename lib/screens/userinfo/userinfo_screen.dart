@@ -1,9 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:yardimtakip/screens/userinfo/userinfo_constant.dart';
-import 'package:yardimtakip/screens/userinfo/userinfo_widgets.dart';
+
+import 'userinfo_widgets.dart';
 
 class UserSaveInfo extends StatelessWidget with UserInfoWidgets {
   const UserSaveInfo({super.key});
@@ -37,7 +35,7 @@ class UserSaveInfo extends StatelessWidget with UserInfoWidgets {
             defaultVerticalPadding(),
             textFieldWidgets(),
             defaultVerticalPadding(),
-            nextButton(),
+            nextButton(context),
             SizedBox(height: 60)
           ],
         ),

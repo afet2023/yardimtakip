@@ -7,10 +7,12 @@ import 'package:yardimtakip/repository/firebase_auth_repository.dart';
 import 'package:yardimtakip/repository/network_repository.dart';
 import 'package:yardimtakip/screens/auth/login_screen.dart';
 import 'package:yardimtakip/screens/auth/register_screen.dart';
+import 'package:yardimtakip/screens/entry_inventory/entry_inventory_screen.dart';
 import 'package:yardimtakip/screens/home/home_screen.dart';
 import 'package:yardimtakip/screens/userinfo/userinfo_screen.dart';
 
 import 'bloc/authentication_bloc.dart';
+import 'bloc/inventory_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +34,6 @@ class MyApp extends StatelessWidget {
           create: (context) => FirebaseAuthRepository(),
         ),
       ],
-
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(
@@ -42,6 +43,9 @@ class MyApp extends StatelessWidget {
               context.read<INetworkRepository>(),
             )..add(AuthenticationInitialEvent()),
           ),
+          BlocProvider(
+              create: (context) =>
+                  InventoryBloc(context.read<INetworkRepository>()))
         ],
         child: MaterialApp(
           title: 'Yardım Takip',
@@ -49,19 +53,15 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.red,
           ),
-          initialRoute: '/sign_in',
+          initialRoute: '/inventory',
           routes: {
             '/home': (context) => const HomeScreen(),
             '/sign_in': (context) => const LoginScreen(),
             '/sign_up': (context) => const RegisterScreen(),
+            '/user_info': (context) => const UserSaveInfo(),
+            '/inventory': (context) => const EntryInventoryScreen(),
           },
-
         ),
-        initialRoute: '/user_info',
-        routes: {
-          '/home': (context) => const HomeScreen(),
-          '/user_info': (context) => UserSaveInfo(),
-        },
       ),
     );
   }
