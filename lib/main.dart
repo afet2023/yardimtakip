@@ -36,6 +36,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<INetworkRepository>(
           create: (context) => FirebaseRepository(FirebaseDatabase.instance),
         ),
+        RepositoryProvider<FirebaseAuthRepository>(
+          create: (context) => FirebaseAuthRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [

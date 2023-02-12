@@ -82,6 +82,7 @@ class ExitlItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+        onTap: onTap,
         leading: Icon(
           Icons.exit_to_app,
           size: 21,

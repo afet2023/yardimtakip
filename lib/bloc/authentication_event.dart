@@ -23,3 +23,5 @@ class AuthenticationRegisterEvent extends AuthenticationEvent {
       required this.name,
       required this.phone});
 }
+
+class AuthenticationLogoutEvent extends AuthenticationEvent {}

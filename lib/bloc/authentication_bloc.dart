@@ -23,6 +23,7 @@ class AuthenticationBloc
     on<AuthenticationInitialEvent>(_onInitialEvent);
     on<AuthenticationLoginEvent>(loginEvent);
     on<AuthenticationRegisterEvent>(registerEvent);
+    on<AuthenticationLogoutEvent>(_onLogoutEvent);
   }
 
   Future<FutureOr<void>> loginEvent(
@@ -116,5 +117,11 @@ class AuthenticationBloc
     } else {
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     }
+  }
+
+  FutureOr<void> _onLogoutEvent(
+      AuthenticationLogoutEvent event, Emitter<AuthenticationState> emit) {
+    _firebaseAuthRepository.signOut();
+    emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
   }
 }

@@ -89,11 +89,15 @@ class _EntryInventoryScreenState extends State<EntryInventoryScreen> {
               );
             } else if (state is InventoryError) {
               return const Center(
-                child: Text('Error'),
+                child: Text('Bir hata oluştu'),
+              );
+            } else if (state is InventorySuccess) {
+              return const Center(
+                child: Text('Kaydedildi'),
               );
             } else {
               return const Center(
-                child: Text('Error'),
+                child: Text('Bir hata oluştu'),
               );
             }
           },

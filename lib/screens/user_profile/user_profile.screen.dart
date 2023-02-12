@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:kartal/kartal.dart';
 import 'package:yardimtakip/screens/user_profile/user_profile.widgets.dart';
+
+import '../../bloc/authentication_bloc.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -10,27 +15,26 @@ class UserProfileScreen extends StatelessWidget {
     var length;
     return Scaffold(
         appBar: AppBar(
+          centerTitle: false,
           title: Center(
-            child: Text(
-              "Profile",
-              style: TextStyle(color: Colors.black),
+              child: Text(
+            "Profile",
+            style: context.textTheme.bodyLarge!.copyWith(
+              color: context.colorScheme.onPrimary,
             ),
-          ),
-          elevation: 0.2,
+          )),
         ),
         body: Padding(
           padding: const EdgeInsets.only(left: 12, right: 12, top: 10),
           child: Column(
             children: [
-              Center(
-                child: Container(
-                  width: double.infinity,
-                  height: 200,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: NetworkImage(
-                              "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/AFAD_logo.png/1200px-AFAD_logo.png"),
-                          fit: BoxFit.fill)),
+              CircleAvatar(
+                radius: 80,
+                backgroundColor: Colors.transparent,
+                child: SvgPicture.asset(
+                  'assets/svg/gsb.svg',
+                  color: Colors.black87,
+                  key: const Key('gsbLogo'),
                 ),
               ),
               Stylesizedbox(
@@ -64,7 +68,13 @@ class UserProfileScreen extends StatelessWidget {
                   text: "Kullanım Koşulları",
                   onTap: () {}),
               Divider(),
-              ExitlItem(onTap: () {}, text: "Çıkış"),
+              ExitlItem(
+                  onTap: () {
+                    context
+                        .read<AuthenticationBloc>()
+                        .add(AuthenticationLogoutEvent());
+                  },
+                  text: "Çıkış"),
               Divider(),
             ],
           ),
