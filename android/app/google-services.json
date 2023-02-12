@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "149823858651",
+    "project_id": "afet2023",
+    "storage_bucket": "afet2023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149823858651:android:6e6b0d2404e197bf2ee9fe",
+        "android_client_info": {
+          "package_name": "org.afet2023.yardimtakip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "149823858651-f0i97om2ddl3vlr5tbk47jcjbu38n0k1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMU1MqVJePKb3DDclVA-w2eTI8WxnOoBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "149823858651-f0i97om2ddl3vlr5tbk47jcjbu38n0k1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
