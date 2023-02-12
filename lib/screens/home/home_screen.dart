@@ -6,6 +6,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
 import 'package:yardimtakip/repository/network_repository.dart';
+import 'package:yardimtakip/screens/user_profile/user_profile.screen.dart';
 import 'package:yardimtakip/screens/userinfo/userinfo_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,11 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: currentIndex == 0
-          ? UserSaveInfo()
-          : Scaffold(
-              body: Center(child: Text('profile')),
-            ),
+      body: currentIndex == 0 ? UserSaveInfo() : UserProfileScreen(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: (index) {

@@ -17,7 +17,6 @@ import 'bloc/authentication_bloc.dart';
 
 import 'bloc/inventory_bloc.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -38,7 +37,6 @@ class MyApp extends StatelessWidget {
           create: (context) => FirebaseAuthRepository(),
         ),
       ],
-
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(
@@ -79,15 +77,7 @@ class MyApp extends StatelessWidget {
             '/sign_up': (context) => const RegisterScreen(),
             '/user_info': (context) => UserSaveInfo(),
           },
-
         ),
-        initialRoute: '/profile',
-        routes: {
-          '/home': (context) => const HomeScreen(),
-          
-          '/profile': (context) => const  UserProfileScreen(),
-
-        },
       ),
     );
   }
