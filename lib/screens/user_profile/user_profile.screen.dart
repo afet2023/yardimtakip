@@ -19,7 +19,7 @@ class UserProfileScreen extends StatelessWidget {
           elevation: 0.2,
         ),
         body: Padding(
-          padding: const EdgeInsets.only(left: 12, right: 12, top: 12),
+          padding: const EdgeInsets.only(left: 12, right: 12, top: 10),
           child: Column(
             children: [
               Center(
@@ -38,9 +38,17 @@ class UserProfileScreen extends StatelessWidget {
               ),
               StyleText(
                 Name: "Muhammed Şen",
+                weight: FontWeight.w500,
+                size: 18,
+                renk: Color(0xFF181718),
               ),
               Stylesizedbox(uzun: 8),
-              StyleText(Name: "Gönüllü"),
+              StyleText(
+                  Name: "Gönüllü",
+                  weight: FontWeight.w400,
+                  size: 14,
+                  renk: Color(0xFF9E9E9E)),
+              Stylesizedbox(uzun: 10),
               ProfilItem(
                   iconData: Icons.person_outline,
                   text: "Hesap Bilgileri",
@@ -56,8 +64,7 @@ class UserProfileScreen extends StatelessWidget {
                   text: "Kullanım Koşulları",
                   onTap: () {}),
               Divider(),
-              ProfilItem(
-                  iconData: Icons.exit_to_app, text: "Çıkış", onTap: () {}),
+              ExitlItem(onTap: () {}, text: "Çıkış"),
               Divider(),
             ],
           ),
