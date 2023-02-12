@@ -8,6 +8,7 @@ import 'package:yardimtakip/repository/network_repository.dart';
 import 'package:yardimtakip/screens/auth/login_screen.dart';
 import 'package:yardimtakip/screens/auth/register_screen.dart';
 import 'package:yardimtakip/screens/home/home_screen.dart';
+import 'package:yardimtakip/screens/userinfo/userinfo_screen.dart';
 
 import 'bloc/authentication_bloc.dart';
 
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
           create: (context) => FirebaseAuthRepository(),
         ),
       ],
+
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(
@@ -53,7 +55,13 @@ class MyApp extends StatelessWidget {
             '/sign_in': (context) => const LoginScreen(),
             '/sign_up': (context) => const RegisterScreen(),
           },
+
         ),
+        initialRoute: '/user_info',
+        routes: {
+          '/home': (context) => const HomeScreen(),
+          '/user_info': (context) => UserSaveInfo(),
+        },
       ),
     );
   }
