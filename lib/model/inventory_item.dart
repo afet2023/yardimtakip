@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-class InventoryItemModel {
+import 'package:equatable/equatable.dart';
+
+class InventoryItemModel extends Equatable {
   final String id;
   final String name;
   final String description;
@@ -68,4 +70,7 @@ class InventoryItemModel {
 
   @override
   int get hashCode => id.hashCode ^ name.hashCode ^ description.hashCode;
+
+  @override
+  List<Object?> get props => [id, name, description, quantity];
 }

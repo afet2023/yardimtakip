@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:kartal/kartal.dart';
+import 'package:yardimtakip/screens/userinfo/userinfo_constant.dart';
 
 import 'userinfo_widgets.dart';
 
@@ -10,12 +12,21 @@ class UserSaveInfo extends StatelessWidget with UserInfoWidgets {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Depremzede Kaydı Oluştur',
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        centerTitle: true,
+        title: Text('Depremzede Kaydı Oluştur',
+            style: context.textTheme.bodyLarge!.copyWith(
+              color: context.colorScheme.onPrimary,
+            )),
+        centerTitle: false,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.recycling),
+            onPressed: () {
+              UserInfoConstants().userControllers.forEach((element) {
+                element.text = '';
+              });
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(
