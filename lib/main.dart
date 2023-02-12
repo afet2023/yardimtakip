@@ -10,11 +10,13 @@ import 'package:yardimtakip/screens/auth/login_screen.dart';
 import 'package:yardimtakip/screens/auth/register_screen.dart';
 import 'package:yardimtakip/screens/entry_inventory/entry_inventory_screen.dart';
 import 'package:yardimtakip/screens/home/home_screen.dart';
+
 import 'package:yardimtakip/screens/userinfo/userinfo_screen.dart';
 
 import 'bloc/authentication_bloc.dart';
 
 import 'bloc/inventory_bloc.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
           create: (context) => FirebaseAuthRepository(),
         ),
       ],
+
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(
@@ -76,7 +79,15 @@ class MyApp extends StatelessWidget {
             '/sign_up': (context) => const RegisterScreen(),
             '/user_info': (context) => UserSaveInfo(),
           },
+
         ),
+        initialRoute: '/profile',
+        routes: {
+          '/home': (context) => const HomeScreen(),
+          
+          '/profile': (context) => const  UserProfileScreen(),
+
+        },
       ),
     );
   }
