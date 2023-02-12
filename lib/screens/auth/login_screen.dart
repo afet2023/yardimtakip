@@ -38,7 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state.status == AuthenticationStatus.authenticated) {
-          Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/home', (route) => false);
         } else if (state.status == AuthenticationStatus.unauthenticated) {}
       },
       child: Scaffold(
