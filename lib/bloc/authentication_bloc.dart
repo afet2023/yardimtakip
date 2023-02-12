@@ -16,12 +16,13 @@ class AuthenticationBloc
   AuthenticationBloc(this._firebaseAuthRepository)
       : super(const AuthenticationState()) {
     on<AuthenticationEvent>((event, emit) {});
-    on<AuthenticationLogin>(loginEvent);
-    on<AuthenticationRegister>(registerEvent);
+    on<AuthenticationInitialEvent>(_onInitialEvent);
+    on<AuthenticationLoginEvent>(loginEvent);
+    on<AuthenticationRegisterEvent>(registerEvent);
   }
 
   Future<FutureOr<void>> loginEvent(
-      AuthenticationLogin event, Emitter<AuthenticationState> emit) async {
+      AuthenticationLoginEvent event, Emitter<AuthenticationState> emit) async {
     try {
       emit(state.copyWith(status: AuthenticationStatus.loading));
       await _firebaseAuthRepository.signInWithEmailAndPassword(
@@ -40,7 +41,7 @@ class AuthenticationBloc
   }
 
   Future<FutureOr<void>> registerEvent(
-      AuthenticationRegister event, Emitter<AuthenticationState> emit) async {
+      AuthenticationRegisterEvent event, Emitter<AuthenticationState> emit) async {
     try {
       emit(state.copyWith(status: AuthenticationStatus.loading));
       await _firebaseAuthRepository.createUserWithEmailAndPassword(
@@ -58,4 +59,7 @@ class AuthenticationBloc
           errorMessage: e.toString()));
     }
   }
+
+  FutureOr<void> _onInitialEvent(
+      AuthenticationInitialEvent event, Emitter<AuthenticationState> emit) {}
 }
