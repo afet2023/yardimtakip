@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
+import 'package:yardimtakip/constants.dart';
+import 'package:yardimtakip/model/inventory_category_model.dart';
+import 'package:yardimtakip/model/inventory_item.dart';
 import 'package:yardimtakip/screens/userinfo/userinfo_constant.dart';
 
+import '../../repository/network_repository.dart';
+
 class UserInfoWidgets {
-  Widget nextButton() {
+  Widget nextButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: InkWell(
-        onTap: () {
-          print(UserInfoConstants.nameSurnameController);
-        },
+        onTap: () async {},
         child: Container(
           alignment: Alignment.center,
           height: 50,

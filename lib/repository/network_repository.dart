@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:yardimtakip/model/inventory_category_model.dart';
 import 'package:yardimtakip/model/inventory_item.dart';
 import 'package:yardimtakip/model/volunteer_model.dart';
 
@@ -10,7 +11,9 @@ abstract class INetworkRepository {
   Future<VolunteerModel?> getVolunteerById(String volunteerId);
   Future<bool> isVolunteerExist(String volunteerId);
   Future<bool> verifiedVolunteer(String volunteerId);
-  Future<void> addInventory(InventoryItemModel inventoryItemModel);
+
+  Future<void> addCategoryInventory(InventoryCategoryModel categoryModel);
+  Future<List<InventoryCategoryModel>> getAllInventoryCategories();
   Future<List<InventoryItemModel>> getAllInventories();
   Future<void> addForm(FormModel formModel);
   Future<List<FormModel>> getAllFormFilledByVolunteerId(String volunteerId);
@@ -27,15 +30,6 @@ class FirebaseRepository implements INetworkRepository {
         .child('forms')
         .push()
         .set(formModel.toMap());
-  }
-
-  @override
-  Future<void> addInventory(InventoryItemModel inventoryItemModel) {
-    return firebaseDatabase
-        .ref()
-        .child('inventories')
-        .push()
-        .set(inventoryItemModel.toMap());
   }
 
   @override
@@ -119,5 +113,27 @@ class FirebaseRepository implements INetworkRepository {
   Future<bool> verifiedVolunteer(String volunteerId) {
     // TODO: implement verifiedVolunteer
     throw UnimplementedError();
+  }
+
+  @override
+  Future<void> addCategoryInventory(InventoryCategoryModel categoryModel) {
+    return firebaseDatabase
+        .ref()
+        .child('inventoryCategories')
+        .push()
+        .set(categoryModel.toMap());
+  }
+
+  @override
+  Future<List<InventoryCategoryModel>> getAllInventoryCategories() async {
+    var categories = <InventoryCategoryModel>[];
+    var databaseEvent =
+        await firebaseDatabase.ref().child("inventoryCategories").once();
+    if (databaseEvent.snapshot.value == null) return categories;
+    var data = databaseEvent.snapshot.value as Map;
+    data.forEach((key, value) {
+      categories.add(InventoryCategoryModel.fromMap(value));
+    });
+    return categories;
   }
 }

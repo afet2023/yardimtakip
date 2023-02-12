@@ -4,6 +4,7 @@ class InventoryItemModel {
   final String id;
   final String name;
   final String description;
+  int quantity = 0;
   InventoryItemModel({
     required this.id,
     required this.name,
