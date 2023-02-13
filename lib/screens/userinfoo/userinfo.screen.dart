@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:yardimtakip/screens/addcitizen/addcitizen.dart';
-import 'package:yardimtakip/screens/addcitizen/addcitizen_provider.dart';
 import 'package:yardimtakip/screens/userinfoo/userinfo.const.dart';
 
 class UserInfoView extends StatefulWidget {
