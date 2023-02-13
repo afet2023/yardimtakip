@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kartal/kartal.dart';
+import 'package:yardimtakip/screens/auth/login_cubit.dart';
 import '../../bloc/authentication_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -48,40 +49,46 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       },
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Center(
-            child: SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 80,
-                    backgroundColor: Colors.transparent,
-                    child: SvgPicture.asset(
-                      'assets/svg/gsb.svg',
-                      color: Colors.black87,
-                      key: const Key('gsbLogo'),
-                    ),
+      child: BlocProvider(
+        create: (context) => LoginCubit(),
+        child: Builder(builder: (context) {
+          return Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Center(
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 80,
+                        backgroundColor: Colors.transparent,
+                        child: SvgPicture.asset(
+                          'assets/svg/gsb.svg',
+                          color: Colors.black87,
+                          key: const Key('gsbLogo'),
+                        ),
+                      ),
+                      Text('Tekrar Hoşgeldiniz',
+                          style: context.textTheme.headline4),
+                      Text(
+                        'Sizin için oluşturulmuş e-posta ve şifreniz ile oturum açarak devam edebilirsiniz.',
+                        textAlign: TextAlign.center,
+                        style: context.textTheme.bodyText2,
+                      ),
+                      _buildForm(context),
+                      const SizedBox(height: 20),
+                      buildNoAccount(context)
+                    ],
                   ),
-                  Text('Tekrar Hoşgeldiniz',
-                      style: context.textTheme.headline4),
-                  Text(
-                    'Sizin için oluşturulmuş e-posta ve şifreniz ile oturum açarak devam edebilirsiniz.',
-                    textAlign: TextAlign.center,
-                    style: context.textTheme.bodyText2,
-                  ),
-                  _buildForm(context),
-                  const SizedBox(height: 20),
-                  buildNoAccount(context)
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
@@ -93,11 +100,11 @@ class _LoginScreenState extends State<LoginScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildEmailField(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildPasswordField(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildSignInButton(context),
         ],
       ),
@@ -105,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Divider _buildDivider() {
-    return Divider(
+    return const Divider(
       height: 20,
       thickness: 1,
       indent: 20,
@@ -132,24 +139,34 @@ class _LoginScreenState extends State<LoginScreen> {
           borderRadius: BorderRadius.circular(32),
           color: Colors.white.withOpacity(0.6),
         ),
-        child: TextFormField(
-          controller: emailController,
-          keyboardType: TextInputType.emailAddress,
-          textInputAction: TextInputAction.next,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return 'Email boş olamaz.';
-            } else if (!isValidEmail(value)) {
-              return 'Email formatı hatalı';
-            }
-
-            return null;
-          },
-          decoration: const InputDecoration(
-            labelText: "Email",
-            border: InputBorder.none,
-          ),
-        ),
+        child: BlocBuilder<LoginCubit, LoginCubitState>(
+            buildWhen: (previous, current) =>
+                previous.emailErrorText != current.emailErrorText,
+            builder: (context, state) {
+              return TextFormField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                onChanged: ((value) {
+                  if (value.isEmpty) {
+                    context
+                        .read<LoginCubit>()
+                        .changeEmailErrorText('Email boş olamaz.');
+                  } else if (!isValidEmail(value)) {
+                    context
+                        .read<LoginCubit>()
+                        .changeEmailErrorText('Email formatı hatalı');
+                  } else {
+                    context.read<LoginCubit>().changeEmailErrorText(null);
+                  }
+                }),
+                decoration: InputDecoration(
+                  errorText: state.emailErrorText,
+                  labelText: "Email",
+                  border: InputBorder.none,
+                ),
+              );
+            }),
       ),
     );
   }
@@ -160,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
       //padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       backgroundColor: color ?? Colors.red,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       onVisible: onVisible,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -194,31 +211,32 @@ class _LoginScreenState extends State<LoginScreen> {
                 spreadRadius: 1,
               ),
             ]),
-        child: StatefulBuilder(
-          builder: (context, setInnerState) {
+        child: BlocBuilder<LoginCubit, LoginCubitState>(
+          buildWhen: (previous, current) =>  previous.passwordErrorText != current.passwordErrorText || previous.passwordObscureText != current.passwordObscureText,
+          builder: (context, state) {
             return TextFormField(
               controller: passwordController,
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Şifre alanı boş olamaz.';
+              onChanged: (value) {
+                if (value.isEmpty) {
+                  context.read<LoginCubit>().changePasswordErrorText('Şifre alanı boş olamaz.');
                 } else if (value.length < 6) {
-                  return 'Şifreniz minimum 6 haneli olmalıdır.';
+                  context.read<LoginCubit>().changePasswordErrorText('Şifreniz minimum 6 haneli olmalıdır.');
                 }
-
-                return null;
+                else{
+                  context.read<LoginCubit>().changePasswordErrorText(null);
+                }
               },
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
+                  errorText: state.passwordErrorText,
                   border: InputBorder.none,
                   labelText: "Password",
                   suffixIcon: InkWell(
                       onTap: () {
-                        setInnerState(() {
-                          isVisible = !isVisible;
-                        });
+                        context.read<LoginCubit>().changePasswordObscureText(!state.passwordObscureText);
                       },
-                      child: const Icon(Icons.visibility))),
-              obscureText: !isVisible,
+                      child: Icon(!state.passwordObscureText ? Icons.visibility : Icons.visibility_off))),
+              obscureText: state.passwordObscureText,
             );
           },
         ),
@@ -255,25 +273,30 @@ class _LoginScreenState extends State<LoginScreen> {
         ]));
   }
 
-  ElevatedButton _buildSignInButton(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          elevation: 5,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-          minimumSize: const Size(double.infinity, 50)),
-      onPressed: () async {
-        if (formKey.currentState!.validate()) {
-          context.read<AuthenticationBloc>().add(
-                AuthenticationLoginEvent(
-                    email: emailController.text,
-                    password: passwordController.text),
-              );
-        }
+  Widget _buildSignInButton(BuildContext context) {
+    return BlocBuilder<LoginCubit, LoginCubitState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32)),
+              minimumSize: const Size(double.infinity, 50)),
+          onPressed: [false, null].contains(state.loginButtonEnablement) ? null : () async {
+            FocusScope.of(context).unfocus();
+            if (formKey.currentState!.validate()) {
+              context.read<AuthenticationBloc>().add(
+                    AuthenticationLoginEvent(
+                        email: emailController.text,
+                        password: passwordController.text),
+                  );
+            }
+          },
+          child: const Text(
+            "Giriş Yap",
+          ),
+        );
       },
-      child: Text(
-        "Giriş Yap",
-      ),
     );
   }
 }

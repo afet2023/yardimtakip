@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kartal/kartal.dart';
+import 'package:yardimtakip/screens/auth/register_cubit.dart';
 
 import '../../bloc/authentication_bloc.dart';
 
@@ -49,40 +50,54 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           );
         }
+        else if(state.status == AuthenticationStatus.unauthenticated && state.errorMessage == "The email address is already in use by another account."){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Girmiş olduğunuz mail adresi halihazırda kullanılmaktadır."),
+            ),
+          );
+        }
       },
-      child: Scaffold(
-        body: Center(
-          child: SingleChildScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 80,
-                  backgroundColor: Colors.transparent,
-                  child: SvgPicture.asset(
-                    'assets/svg/gsb.svg',
-                    color: Colors.black87,
-                    key: const Key('gsbLogo'),
+      child: BlocProvider(
+        create: (context) => RegisterCubit(),
+        child: Builder(
+          builder: (context) {
+            return Scaffold(
+              body: Center(
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 80,
+                        backgroundColor: Colors.transparent,
+                        child: SvgPicture.asset(
+                          'assets/svg/gsb.svg',
+                          color: Colors.black87,
+                          key: const Key('gsbLogo'),
+                        ),
+                      ),
+                      Text('Hoşgeldiniz', style: context.textTheme.titleLarge),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Kayıt olmak için lütfen e-posta ve şifrenizi giriniz.',
+                        style: context.textTheme.bodyText2,
+                      ),
+                      const SizedBox(height: 16),
+                      _buildForm(context),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      _buildDivider(),
+                      buildLogin(context)
+                    ],
                   ),
                 ),
-                Text('Hoşgeldiniz', style: context.textTheme.titleLarge),
-                SizedBox(height: 8),
-                Text(
-                  'Kayıt olmak için lütfen e-posta ve şifrenizi giriniz.',
-                  style: context.textTheme.bodyText2,
-                ),
-                SizedBox(height: 16),
-                _buildForm(context),
-                SizedBox(
-                  height: 20,
-                ),
-                _buildDivider(),
-                buildLogin(context)
-              ],
-            ),
-          ),
+              ),
+            );
+          }
         ),
       ),
     );
@@ -101,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             _buildPhoneField(),
             _buildEmailField(),
             _buildPasswordField(),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildSignUpButton(context),
           ],
         ),
@@ -110,7 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Divider _buildDivider() {
-    return Divider(
+    return const Divider(
       height: 20,
       thickness: 1,
       indent: 20,
@@ -137,20 +152,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
           borderRadius: BorderRadius.circular(32),
           color: Colors.white.withOpacity(0.6),
         ),
-        child: TextFormField(
-          controller: phoneController,
-          keyboardType: TextInputType.phone,
-          textInputAction: TextInputAction.next,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return 'Telefon alanı boş olamaz';
-            }
-            return null;
-          },
-          decoration: const InputDecoration(
-            labelText: "Telefon",
-            border: InputBorder.none,
-          ),
+        child: BlocBuilder<RegisterCubit, RegisterCubitState>(
+          builder: (context, state) {
+            return TextFormField(
+              controller: phoneController,
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.next,
+              onChanged: (value) {
+                  print(state.phoneNumberErrorText);
+                if (value.isEmpty) {
+                    context.read<RegisterCubit>().changePhoneNumberErrorText('Telefon alanı boş olamaz');
+                }
+                else if(RegExp("^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*\$").hasMatch(value)){
+                    context.read<RegisterCubit>().changePhoneNumberErrorText(null);
+                }
+                else{
+                    context.read<RegisterCubit>().changePhoneNumberErrorText("Lütfen geçerli bir telefon numarası giriniz.");
+                }
+              },
+              decoration: InputDecoration(
+                errorText: state.phoneNumberErrorText,
+                labelText: "Telefon",
+                border: InputBorder.none,
+              ),
+            );
+          }
         ),
       ),
     );
@@ -168,20 +194,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
           borderRadius: BorderRadius.circular(32),
           color: Colors.white.withOpacity(0.6),
         ),
-        child: TextFormField(
-          controller: nameController,
-          keyboardType: TextInputType.text,
-          textInputAction: TextInputAction.next,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return 'Ad Soyad alanı boş olamaz';
-            }
-            return null;
-          },
-          decoration: const InputDecoration(
-            labelText: "Ad Soyad",
-            border: InputBorder.none,
-          ),
+        child: BlocBuilder<RegisterCubit, RegisterCubitState>(
+          builder: (context, state) {
+            return TextFormField(
+              controller: nameController,
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              onChanged: (value) {
+                if (value.isEmpty) {
+                  context.read<RegisterCubit>().changeNameSurnameErrorText('Ad Soyad alanı boş olamaz');
+                }
+                else{
+                  context.read<RegisterCubit>().changeNameSurnameErrorText(null);
+                }
+              },
+              decoration:  InputDecoration(
+                labelText: "Ad Soyad",
+                errorText: state.nameSurnameErrorText,
+                border: InputBorder.none,
+              ),
+            );
+          }
         ),
       ),
     );
@@ -199,22 +232,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
           borderRadius: BorderRadius.circular(32),
           color: Colors.white.withOpacity(0.6),
         ),
-        child: TextFormField(
-          controller: emailController,
-          keyboardType: TextInputType.emailAddress,
-          textInputAction: TextInputAction.next,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return 'Email alanı boş olamaz';
-            } else if (!isValidEmail(value)) {
-              return 'Geçerli bir email adresi giriniz';
-            }
-            return null;
-          },
-          decoration: const InputDecoration(
-            labelText: "Email",
-            border: InputBorder.none,
-          ),
+        child: BlocBuilder<RegisterCubit, RegisterCubitState>(
+          builder: (context, state) {
+            return TextFormField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              onChanged: (value) {
+                if (value.isEmpty) {
+                  context.read<RegisterCubit>().changeEmailErrorText('Email alanı boş olamaz');
+                } else if (!isValidEmail(value)) {
+                  context.read<RegisterCubit>().changeEmailErrorText('Geçerli bir email adresi giriniz');
+                }
+                else{
+                  context.read<RegisterCubit>().changeEmailErrorText(null);
+                }
+              },
+              decoration: InputDecoration(
+                errorText: state.mailErrorText,
+                labelText: "Email",
+                border: InputBorder.none,
+              ),
+            );
+          }
         ),
       ),
     );
@@ -260,30 +300,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 spreadRadius: 1,
               ),
             ]),
-        child: StatefulBuilder(
-          builder: (context, setInnerState) {
+        child: BlocBuilder<RegisterCubit, RegisterCubitState>(
+          builder: (context, state) {
             return TextFormField(
               controller: passwordController,
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Şifre alanı boş olamaz';
+              onChanged: (value) {
+                if (value.isEmpty) {
+                  context.read<RegisterCubit>().changePasswordErrorText('Şifre alanı boş olamaz');
                 } else if (value.length < 6) {
-                  return 'Şifre en az 6 karakter olmalıdır';
+                  context.read<RegisterCubit>().changePasswordErrorText('Şifre en az 6 karakter olmalıdır');
                 }
-                return null;
+                else{
+                  context.read<RegisterCubit>().changePasswordErrorText(null);
+                }
               },
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
                   border: InputBorder.none,
                   labelText: "Password",
+                  errorText: state.passwordErrorText,
                   suffixIcon: InkWell(
-                      onTap: () {
-                        setInnerState(() {
-                          isVisible = !isVisible;
-                        });
-                      },
-                      child: const Icon(Icons.visibility))),
-              obscureText: !isVisible,
+                    onTap: () {
+                      context.read<RegisterCubit>().changeObscureText(!state.passwordObscure);
+                    },
+                      child: Icon(!state.passwordObscure ? Icons.visibility: Icons.visibility_off)
+                    ),
+              ),
+              obscureText: state.passwordObscure,
             );
           },
         ),
@@ -314,26 +357,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ]));
   }
 
-  ElevatedButton _buildSignUpButton(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          elevation: 5,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-          minimumSize: const Size(double.infinity, 50)),
-      onPressed: () async {
-        if (formKey.currentState!.validate()) {
-          context.read<AuthenticationBloc>().add(AuthenticationRegisterEvent(
-                email: emailController.text,
-                password: passwordController.text,
-                phone: phoneController.text,
-                name: nameController.text,
-              ));
-        }
-      },
-      child: Text(
-        "Kayıt Ol",
-      ),
+  Widget _buildSignUpButton(BuildContext context) {
+    return BlocBuilder<RegisterCubit, RegisterCubitState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              elevation: 5,
+              shape:
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+              minimumSize: const Size(double.infinity, 50)),
+          onPressed: !state.registerButtonEnablement ? null : () async {
+            if (formKey.currentState!.validate()) {
+              FocusScope.of(context).unfocus();
+              context.read<AuthenticationBloc>().add(AuthenticationRegisterEvent(
+                    email: emailController.text,
+                    password: passwordController.text,
+                    phone: phoneController.text,
+                    name: nameController.text,
+                  ));
+            }
+          },
+          child: const Text(
+            "Kayıt Ol",
+          ),
+        );
+      }
     );
   }
 
