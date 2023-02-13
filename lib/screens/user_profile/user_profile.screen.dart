@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kartal/kartal.dart';
+import 'package:yardimtakip/screens/conditions/conditions_screen.dart';
+import 'package:yardimtakip/screens/helpandsupport/helpView.dart';
 import 'package:yardimtakip/screens/user_profile/user_profile.widgets.dart';
 
 import '../../bloc/authentication_bloc.dart';
@@ -54,19 +56,26 @@ class UserProfileScreen extends StatelessWidget {
                   renk: Color(0xFF9E9E9E)),
               Stylesizedbox(uzun: 10),
               ProfilItem(
-                  iconData: Icons.person_outline,
-                  text: "Hesap Bilgileri",
-                  onTap: () {}),
-              Divider(),
-              ProfilItem(
                   iconData: Icons.contact_support_outlined,
                   text: "Destek ve Şikayet",
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HelpAndSupportView()),
+                    );
+                  }),
               Divider(),
               ProfilItem(
                   iconData: Icons.rule,
                   text: "Kullanım Koşulları",
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ConditionsScreen()),
+                    );
+                  }),
               Divider(),
               ExitlItem(
                   onTap: () {

@@ -89,7 +89,7 @@ class ExitlItem extends StatelessWidget {
           color: Color(0xFFDA291C),
         ),
         title: StyleText(
-          Name: "Çıkış",
+          Name: text,
           size: 16,
           weight: FontWeight.w300,
           renk: Color(0xFF181718),
