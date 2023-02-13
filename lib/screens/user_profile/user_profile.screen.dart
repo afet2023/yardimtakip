@@ -57,17 +57,26 @@ class UserProfileScreen extends StatelessWidget {
                   iconData: Icons.person_outline,
                   text: "Hesap Bilgileri",
                   onTap: () {}),
-              Divider(),
+              Divider(
+                height: 1,
+                thickness: 1,
+              ),
               ProfilItem(
                   iconData: Icons.contact_support_outlined,
                   text: "Destek ve Şikayet",
                   onTap: () {}),
-              Divider(),
+              Divider(
+                height: 1,
+                thickness: 1,
+              ),
               ProfilItem(
                   iconData: Icons.rule,
                   text: "Kullanım Koşulları",
                   onTap: () {}),
-              Divider(),
+              Divider(
+                height: 1,
+                thickness: 1,
+              ),
               ExitlItem(
                   onTap: () {
                     context
@@ -75,7 +84,10 @@ class UserProfileScreen extends StatelessWidget {
                         .add(AuthenticationLogoutEvent());
                   },
                   text: "Çıkış"),
-              Divider(),
+              Divider(
+                height: 1,
+                thickness: 1,
+              ),
             ],
           ),
         ));

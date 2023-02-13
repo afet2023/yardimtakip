@@ -62,10 +62,10 @@ class _EarthquakeVictimsDetailScreenState
             ),
             BlocBuilder<EathquakeBloc, EathquakeState>(
               builder: (context, state) {
-                if (state.formModel == null)
-                  return Center(child: CircularProgressIndicator());
+                if (state.formModel == null) return  const Center (child: CircularProgressIndicator());
                 return Expanded(
                   child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
                     itemBuilder: (context, index) {
                       var inventory = state.formModel!.inventories[index];
                       return ListTile(
