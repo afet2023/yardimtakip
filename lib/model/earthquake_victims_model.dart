@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 class EarthquakeVictims {
   final String id;
   final String nameAndSurname;
@@ -8,7 +10,7 @@ class EarthquakeVictims {
   final String createdAt;
   final String uid;
   final String city;
-  final int familyCount;
+  final List<String> familyIds;
   EarthquakeVictims({
     required this.id,
     required this.nameAndSurname,
@@ -17,7 +19,7 @@ class EarthquakeVictims {
     required this.createdAt,
     required this.uid,
     required this.city,
-    required this.familyCount,
+    required this.familyIds,
   });
 
   EarthquakeVictims copyWith({
@@ -28,7 +30,7 @@ class EarthquakeVictims {
     String? createdAt,
     String? uid,
     String? city,
-    int? familyCount,
+    List<String>? familyIds,
   }) {
     return EarthquakeVictims(
       id: id ?? this.id,
@@ -38,13 +40,13 @@ class EarthquakeVictims {
       createdAt: createdAt ?? this.createdAt,
       uid: uid ?? this.uid,
       city: city ?? this.city,
-      familyCount: familyCount ?? this.familyCount,
+      familyIds: familyIds ?? this.familyIds,
     );
   }
 
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
-  
+
     result.addAll({'id': id});
     result.addAll({'nameAndSurname': nameAndSurname});
     result.addAll({'phoneNumber': phoneNumber});
@@ -52,8 +54,8 @@ class EarthquakeVictims {
     result.addAll({'createdAt': createdAt});
     result.addAll({'uid': uid});
     result.addAll({'city': city});
-    result.addAll({'familyCount': familyCount});
-  
+    result.addAll({'familyIds': familyIds});
+
     return result;
   }
 
@@ -66,7 +68,7 @@ class EarthquakeVictims {
       createdAt: map['createdAt'] ?? '',
       uid: map['uid'] ?? '',
       city: map['city'] ?? '',
-      familyCount: map['familyCount']?.toInt() ?? 0,
+      familyIds: List<String>.from(map['familyIds']),
     );
   }
 
@@ -77,33 +79,33 @@ class EarthquakeVictims {
 
   @override
   String toString() {
-    return 'EarthquakeVictims(id: $id, nameAndSurname: $nameAndSurname, phoneNumber: $phoneNumber, createdByVolunteerId: $createdByVolunteerId, createdAt: $createdAt, uid: $uid, city: $city, familyCount: $familyCount)';
+    return 'EarthquakeVictims(id: $id, nameAndSurname: $nameAndSurname, phoneNumber: $phoneNumber, createdByVolunteerId: $createdByVolunteerId, createdAt: $createdAt, uid: $uid, city: $city, familyIds: $familyIds)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is EarthquakeVictims &&
-      other.id == id &&
-      other.nameAndSurname == nameAndSurname &&
-      other.phoneNumber == phoneNumber &&
-      other.createdByVolunteerId == createdByVolunteerId &&
-      other.createdAt == createdAt &&
-      other.uid == uid &&
-      other.city == city &&
-      other.familyCount == familyCount;
+        other.id == id &&
+        other.nameAndSurname == nameAndSurname &&
+        other.phoneNumber == phoneNumber &&
+        other.createdByVolunteerId == createdByVolunteerId &&
+        other.createdAt == createdAt &&
+        other.uid == uid &&
+        other.city == city &&
+        listEquals(other.familyIds, familyIds);
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      nameAndSurname.hashCode ^
-      phoneNumber.hashCode ^
-      createdByVolunteerId.hashCode ^
-      createdAt.hashCode ^
-      uid.hashCode ^
-      city.hashCode ^
-      familyCount.hashCode;
+        nameAndSurname.hashCode ^
+        phoneNumber.hashCode ^
+        createdByVolunteerId.hashCode ^
+        createdAt.hashCode ^
+        uid.hashCode ^
+        city.hashCode ^
+        familyIds.hashCode;
   }
 }

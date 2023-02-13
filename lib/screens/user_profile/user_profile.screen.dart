@@ -16,13 +16,7 @@ class UserProfileScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           centerTitle: false,
-          title: Center(
-              child: Text(
-            "Profile",
-            style: context.textTheme.bodyLarge!.copyWith(
-              color: context.colorScheme.onPrimary,
-            ),
-          )),
+          title: Text("Profile"),
         ),
         body: Padding(
           padding: const EdgeInsets.only(left: 12, right: 12, top: 10),
