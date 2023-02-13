@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
         body: currentIndex == 0
-            ? UserSaveInfo()
+            ? UserInfoView()
             : currentIndex == 1
                 ? EarthquakeVictimsListScreen()
                 : UserProfileScreen(),
