@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:yardimtakip/screens/helpandsupport/helpConstants.dart';
 import 'package:yardimtakip/screens/helpandsupport/helpWidgets.dart';
 
 class HelpAndSupportView extends StatefulWidget
-    with HelpAndSupportWidgets, HelpConstants {
+    with HelpAndSupportWidgets{
   HelpAndSupportView({super.key});
 
   @override
   State<HelpAndSupportView> createState() => _HelpAndSupportViewState();
 }
 
-class _HelpAndSupportViewState extends State<HelpAndSupportView> with HelpAndSupportWidgets, HelpConstants{
+class _HelpAndSupportViewState extends State<HelpAndSupportView> with HelpAndSupportWidgets{
    String chosenSubject = 'Destek';
   TextEditingController messageController = TextEditingController();
 
