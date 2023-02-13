@@ -107,7 +107,7 @@ class MyApp extends StatelessWidget {
             '/home': (context) => const HomeScreen(),
             '/sign_in': (context) => const LoginScreen(),
             '/sign_up': (context) => const RegisterScreen(),
-            '/user_info': (context) => const UserSaveInfo(),
+            '/user_info': (context) => const UserInfoView(),
             '/profile': (context) => const UserProfileScreen(),
             '/conditions': (context) => const ConditionsScreen(),
           },
