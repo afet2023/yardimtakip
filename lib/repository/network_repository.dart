@@ -25,6 +25,9 @@ abstract class INetworkRepository {
   Future<List<EarthquakeVictims>> getAllEarthquakeVictimsById(String id);
 
   Future<FormModel?> getFormsByEarthquakeId(String id);
+
+  Future<String?> checkIdentities(List<String> identityNumber);
+  
 }
 
 class FirebaseRepository implements INetworkRepository {
@@ -182,9 +185,9 @@ class FirebaseRepository implements INetworkRepository {
 
     var data = databaseEvent.snapshot.value as Map;
 
-    data.forEach((key, value) {
-      victims.add(EarthquakeVictims.fromMap(value));
-    });
+    for (var key in data.values) {
+      victims.add(EarthquakeVictims.fromMap(key));
+    }
     return victims;
   }
 
@@ -200,5 +203,31 @@ class FirebaseRepository implements INetworkRepository {
 
     var data = databaseEvent.snapshot.value as Map;
     return FormModel.fromMap(data.values.first);
+  }
+
+  @override
+  Future<String?> checkIdentities(List<String> identityNumber) async {
+    var clearList =
+        identityNumber.where((element) => element.isNotEmpty).toList();
+    for (var id in clearList) {
+      //earthquakeVictims içindeki familyIds listesinin içinde bulunup bulunmadığını kontrol et
+      var databaseEvent = await firebaseDatabase
+          .ref()
+          .child("earthquakeVictims")
+          .orderByChild('familyIds')
+          .equalTo(id)
+          .once();
+
+      if (databaseEvent.snapshot.value != null) {
+        return id;
+      }
+      if (databaseEvent.snapshot.value == null) continue;
+      var data = databaseEvent.snapshot.value as Map;
+      var earthquakeVictims = EarthquakeVictims.fromMap(data.values.first);
+      if (DateTime.parse(earthquakeVictims.createdAt)
+          .isAfter(DateTime.now().subtract(Duration(days: 5)))) {
+        return earthquakeVictims.id;
+      }
+    }
   }
 }
