@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:yardimtakip/model/earthquake_victims_model.dart';
 import 'package:yardimtakip/model/inventory_category_model.dart';
@@ -27,7 +29,8 @@ abstract class INetworkRepository {
   Future<FormModel?> getFormsByEarthquakeId(String id);
 
   Future<String?> checkIdentities(List<String> identityNumber);
-  
+  Future<bool> isEarthquakeVictimSavedBefore(String id);
+  bool hasBeenFiveDaysSinceTheVictimGetsLastHelp(EarthquakeVictims earthquakeVictims);
 }
 
 class FirebaseRepository implements INetworkRepository {
@@ -230,4 +233,21 @@ class FirebaseRepository implements INetworkRepository {
       }
     }
   }
+
+  @override
+  Future<bool> isEarthquakeVictimSavedBefore(String id) async {
+    var result = await firebaseDatabase.ref().child("earthquakeVictims").orderByChild('earthquakeVictimsId').equalTo(id).once();
+    if(result.snapshot.value == null) return false;
+    return true;
+  }
+
+  @override 
+  bool hasBeenFiveDaysSinceTheVictimGetsLastHelp(EarthquakeVictims earthquakeVictims) {
+    var lastHelpDate = DateTime.parse(earthquakeVictims.createdAt);
+    var currentDate = DateTime.now();
+    var resultAsDay = currentDate.difference(lastHelpDate).inDays;
+    return resultAsDay == 5;
+  }
+
+
 }
